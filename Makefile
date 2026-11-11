@@ -1,6 +1,6 @@
 DOCKER_REPO="geoservercloud/geoserver-acl"
 
-VERSION?=$(shell git describe --tags --exact-match 2>/dev/null || ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+VERSION?=$(shell git describe --tags --exact-match 2>/dev/null || .\mvnw.cmd help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 #default target
 build: install build-image test-examples
@@ -35,26 +35,27 @@ help:
 
 #build, test, and install all modules
 install:
-	./mvnw -Drevision=$(VERSION) clean install
+	.\mvnw.cmd -Drevision=$(VERSION) clean install
 
 lint:
-	./mvnw -Drevision=$(VERSION) sortpom:verify spotless:check -ntp
+	.\mvnw.cmd -Drevision=$(VERSION) sortpom:verify spotless:check -ntp
 
 format:
-	./mvnw -Drevision=$(VERSION) sortpom:sort spotless:apply -ntp
+	.\mvnw.cmd -Drevision=$(VERSION) sortpom:sort spotless:apply -ntp
 
 package:
-	./mvnw -Drevision=$(VERSION) clean package -DskipTests -U -ntp -T4
+	.\mvnw.cmd -Drevision=$(VERSION) clean package -DskipTests -U -ntp -T4
+# 	.\mvnw.cmd -Drevision=$(VERSION) clean package -ntp -T1C -fae -Dspotless.skip -U -DskipTests
 
 test:
-	./mvnw -Drevision=$(VERSION) verify -ntp -T4
+	.\mvnw.cmd -Drevision=$(VERSION) verify -ntp -T4
 
 test-examples: test-java-example test-python-example
 
 test-java-example:
-	./mvnw -Drevision=$(VERSION) install -pl :gs-acl-webapi-v1-client-adapter -am -ntp -nsu -DskipTests
-	./mvnw -Drevision=$(VERSION) install -DskipTests -ntp -nsu -pl :gs-acl-testcontainer
-	./mvnw -Drevision=$(VERSION) install -ntp -nsu -T4 -f examples/
+	.\mvnw.cmd -Drevision=$(VERSION) install -pl :gs-acl-webapi-v1-client-adapter -am -ntp -nsu -DskipTests
+	.\mvnw.cmd -Drevision=$(VERSION) install -DskipTests -ntp -nsu -pl :gs-acl-testcontainer
+	.\mvnw.cmd -Drevision=$(VERSION) install -ntp -nsu -T4 -f examples/
 
 # Requires the docker image: run `make build-image` first if anything changed
 test-python-example: dist-python-client
@@ -82,8 +83,8 @@ push-image:
 	docker push $(DOCKER_REPO):$(VERSION)
 
 deploy:
-	./mvnw -Drevision=$(VERSION) clean package -ntp -T1C -fae -Dspotless.skip -U -DskipTests
-	./mvnw -Drevision=$(VERSION) deploy -s $$MAVEN_SETTINGS -ntp -T1 -fae -Dspotless.skip -DskipTests \
+	.\mvnw.cmd -Drevision=$(VERSION) clean package -ntp -T1C -fae -Dspotless.skip -U -DskipTests
+	.\mvnw.cmd -Drevision=$(VERSION) deploy -s $$MAVEN_SETTINGS -ntp -T1 -fae -Dspotless.skip -DskipTests \
 	  -DdeployAtEnd=true -DretryFailedDeploymentCount=3 \
 	  -Dmaven.wagon.rto=120000 -Dmaven.wagon.http.retryHandler.count=3
 

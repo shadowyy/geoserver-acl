@@ -232,3 +232,8 @@ Please read the [contribution guidelines](CONTRIBUTING.md) before contributing p
 ## License
 
 GeoServer ACL is Open Source software licensed under the GNU General Public License v2.0.
+
+## 发布到nexus
+```powershell
+.\mvnw.cmd deploy -ntp -T1 -fae -DskipTests -DaltDeploymentRepository='huitongnav-maven-releases::http://nexus.huitongnav.corp'
+```

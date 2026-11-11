@@ -69,7 +69,7 @@
     </snapshotRepository>
   </distributionManagement>
   <properties>
-    <revision>3.0-SNAPSHOT</revision>
+    <revision>3.0.3</revision>
     <!-- default target java version, submodules may override -->
     <java.version>17</java.version>
     <java.sdk.version>17</java.sdk.version>
